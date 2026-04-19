@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lunar Cycle - Chu Kỳ Mặt Trăng</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        @keyframes horseRun {
+            0% { transform: translateX(-100%) scaleX(1); }
+            50% { transform: translateX(50vw) scaleX(1); }
+            51% { transform: translateX(50vw) scaleX(-1); }
+            100% { transform: translateX(110vw) scaleX(-1); }
+        }
+
+        .horse-container {
+            position: fixed;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        .horse {
+            font-size: 3rem;
+            animation: horseRun 10s linear infinite;
+            display: inline-block;
+        }
+
+        .moon-disk {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            background-color: #2d3748;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 0 0 40px rgba(255, 20, 147, 0.4);
+        }
+
+        .moon-phase-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #fce4ec; /* Light pink for the illuminated part */
+            transition: all 0.5s ease-in-out;
+        }
+
+        .bg-pink-strong {
+            background-color: #d81b60;
+        }
+
+        .text-pink-strong {
+            color: #d81b60;
+        }
+    </style>
+</head>
+<body class="bg-pink-50 min-h-screen font-sans text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-pink-strong text-white py-8 shadow-lg">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl font-extrabold mb-2 uppercase tracking-widest">Lunar Cycle Explorer</h1>
+            <p class="text-pink-100">Khám phá chu kỳ mặt trăng so với Trái Đất</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-12">
+        <div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
+            
+            <!-- Left Panel: Input & Info -->
+            <div class="p-8 md:w-1/2 bg-pink-50">
+                <h2 class="text-2xl font-bold text-pink-strong mb-6">Thông số chu kỳ</h2>
+                
+                <div class="mb-6">
+                    <label class="block text-sm font-semibold text-gray-600 mb-2">Chọn ngày xem:</label>
+                    <input type="date" id="datePicker" class="w-full p-3 border-2 border-pink-200 rounded-xl focus:border-pink-500 focus:outline-none transition">
+                </div>
+
+                <div id="results" class="space-y-4">
+                    <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-pink-500">
+                        <p class="text-sm text-gray-500">Pha Mặt Trăng</p>
+                        <p id="phaseName" class="text-xl font-bold text-pink-800">Đang tính toán...</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-pink-500">
+                        <p class="text-sm text-gray-500">Tuổi Trăng (Ngày)</p>
+                        <p id="moonAge" class="text-xl font-bold text-pink-800">--</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-pink-500">
+                        <p class="text-sm text-gray-500">Độ chiếu sáng</p>
+                        <p id="illumination" class="text-xl font-bold text-pink-800">--</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Visual Display -->
+            <div class="p-8 md:w-1/2 flex flex-col items-center justify-center bg-pink-100">
+                <div class="moon-disk mb-8 border-4 border-pink-300" id="moonContainer">
+                    <div id="moonOverlay" class="moon-phase-overlay shadow-inner"></div>
+                </div>
+                <div class="text-center">
+                    <p id="zodiacSign" class="text-pink-600 font-medium italic"></p>
+                    <p class="mt-4 text-sm text-pink-400">Chu kỳ trung bình: 29.53 ngày</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fun Facts Section -->
+        <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-pink-600 p-6 rounded-2xl text-white">
+                <h3 class="font-bold text-lg mb-2">Trăng Non</h3>
+                <p class="text-sm opacity-90">Bắt đầu một chu kỳ mới, mặt trăng nằm giữa Trái Đất và Mặt Trời.</p>
+            </div>
+            <div class="bg-pink-700 p-6 rounded-2xl text-white">
+                <h3 class="font-bold text-lg mb-2">Trăng Tròn</h3>
+                <p class="text-sm opacity-90">Toàn bộ bề mặt mặt trăng được chiếu sáng nhìn từ Trái Đất.</p>
+            </div>
+            <div class="bg-pink-800 p-6 rounded-2xl text-white">
+                <h3 class="font-bold text-lg mb-2">Thủy Triều</h3>
+                <p class="text-sm opacity-90">Lực hấp dẫn của Mặt Trăng là nguyên nhân chính gây ra thủy triều.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Con ngựa chạy qua -->
+    <div class="horse-container">
+        <div class="horse">🐎</div>
+    </div>
+
+    <footer class="text-center py-8 text-pink-400 text-sm">
+        &copy; 2024 Lunar Explorer Pro - Thiết kế với sự mạnh mẽ của màu hồng
+    </footer>
+
+    <script>
+        const datePicker = document.getElementById('datePicker');
+        const phaseNameDisplay = document.getElementById('phaseName');
+        const moonAgeDisplay = document.getElementById('moonAge');
+        const illuminationDisplay = document.getElementById('illumination');
+        const moonOverlay = document.getElementById('moonOverlay');
+
+        // Set default date to today
+        const today = new Date().toISOString().split('T')[0];
+        datePicker.value = today;
+
+        function getMoonPhase(year, month, day) {
+            let c = 0, e = 0, jd = 0, b = 0;
+            if (month < 3) {
+                year--;
+                month += 12;
+            }
+            month++;
+            c = 365.25 * year;
+            e = 30.6 * month;
+            jd = c + e + day - 694039.09; // JD is total days elapsed since 1900
+            jd /= 29.5305882; // Divide by the lunar cycle
+            b = parseInt(jd); // Integer part
+            jd -= b; // Fractional part
+            let age = jd * 29.5305882;
+            return age;
+        }
+
+        function updateDisplay() {
+            const date = new Date(datePicker.value);
+            const age = getMoonPhase(date.getFullYear(), date.getMonth() + 1, date.getDate());
+            
+            let phase = "";
+            let illum = 0;
+
+            if (age < 1.84566) phase = "Trăng Non (New Moon)";
+            else if (age < 5.53699) phase = "Trăng Lưỡi Liềm Đầu Tháng (Waxing Crescent)";
+            else if (age < 9.22831) phase = "Bán Nguyệt Đầu Tháng (First Quarter)";
+            else if (age < 12.91963) phase = "Trăng Khuyết Đầu Tháng (Waxing Gibbous)";
+            else if (age < 16.61096) phase = "Trăng Tròn (Full Moon)";
+            else if (age < 20.30228) phase = "Trăng Khuyết Cuối Tháng (Waning Gibbous)";
+            else if (age < 23.99361) phase = "Bán Nguyệt Cuối Tháng (Last Quarter)";
+            else if (age < 27.68493) phase = "Trăng Lưỡi Liềm Cuối Tháng (Waning Crescent)";
+            else phase = "Trăng Non (New Moon)";
+
+            // Calculate illumination %
+            // Simplified: 0% at New Moon (0 or 29.5), 100% at Full Moon (14.7)
+            illum = Math.abs(50 - (age / 29.5305882) * 100) * 2;
+            illum = 100 - illum;
+
+            phaseNameDisplay.innerText = phase;
+            moonAgeDisplay.innerText = age.toFixed(2);
+            illuminationDisplay.innerText = illum.toFixed(1) + "%";
+
+            // Update Moon Visual
+            // This is a simple visual representation
+            updateMoonVisual(age);
+        }
+
+        function updateMoonVisual(age) {
+            const percent = (age / 29.5305882) * 100;
+            
+            // Logic for visualizing the phase
+            if (percent < 50) {
+                // Waxing: Overlay moves from left to right, revealing the "light"
+                // For simplicity, we adjust the border radius or width
+                moonOverlay.style.left = (percent * 2) + "%";
+                moonOverlay.style.width = "100%";
+                moonOverlay.style.borderRadius = "0";
+                moonOverlay.style.backgroundColor = "#2d3748"; // Dark overlay moving away
+            } else {
+                // Waning: Dark overlay starts coming back from the left
+                const waningPercent = (percent - 50) * 2;
+                moonOverlay.style.left = "0";
+                moonOverlay.style.width = waningPercent + "%";
+                moonOverlay.style.borderRadius = "0";
+                moonOverlay.style.backgroundColor = "#2d3748";
+            }
+            
+            // Enhance visual: pure white/pink for light
+            document.getElementById('moonContainer').style.backgroundColor = "#fce4ec";
+        }
+
+        datePicker.addEventListener('change', updateDisplay);
+        
+        // Initial call
+        updateDisplay();
+    </script>
+</body>
+</html>
